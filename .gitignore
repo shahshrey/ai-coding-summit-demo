@@ -48,3 +48,4 @@ supabase-local-credentials.txt
 # editor
 .vscode/
 .idea/
+public/data/resources-index.json
