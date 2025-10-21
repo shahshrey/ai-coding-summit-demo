@@ -8,7 +8,7 @@
 
 ## 1. Executive Summary
 
-Transform the existing Next.js 15.3 + Supabase starter template into a comprehensive Cursor Resources Management Website where users can browse, search, preview, and download 509+ Cursor-related resources (commands, rules, MCP tools, and shell scripts). Authenticated users can save favorites for quick access.
+Transform the existing Next.js 15.3 + Supabase starter template into a comprehensive Cursor Resources Management Website where users can browse, search, preview, and download 509+ Cursor-related resources (commands, rules, MCP tools, and shell scripts). Authenticated users can save favorites for quick access. You will have to configure supabase and create .env.local file.
 
 ### Key Objectives
 - **Professional dark theme design system** with pre-built components
@@ -18,16 +18,6 @@ Transform the existing Next.js 15.3 + Supabase starter template into a comprehen
 - User favorites system (authentication required)
 - Download tracking and popular resources analytics
 - Fast performance (sub-2s page loads)
-
-### Design System
-This template includes a complete **Dark Theme Design System** optimized for developer tools. All UI components use:
-- Semantic color tokens (backgrounds, text, borders)
-- Fluid typography with responsive scaling
-- Pre-built component classes (`.card`, `.btn-primary`, `.badge`, etc.)
-- Consistent spacing and animations
-- Professional dark blue-gray aesthetic
-
-**Implementation Note**: Section 3.2 contains the complete CSS that must be added to `app/globals.css` before building any features.
 
 ---
 
@@ -86,20 +76,12 @@ This template includes a complete **Dark Theme Design System** optimized for dev
 - Next.js 15.3 (App Router, Server Components, Server Actions)
 - Supabase (PostgreSQL, Auth, RLS)
 - TypeScript (strict mode)
-- Tailwind CSS v4
+- Tailwind CSS v4 (**Critical**: `postcss.config.mjs` must use object syntax: `plugins: { "@tailwindcss/postcss": {} }`)
+- next-themes (dark mode provider configured in root layout)
 - shadcn/ui components
 - Zod (validation)
 - lucide-react (icons)
 - Vitest (testing)
-
-#### Must Be Implemented First ⚠️
-- **Dark Theme Design System** - Complete CSS design system with:
-  - Color tokens for dark theme
-  - Fluid typography system
-  - Pre-built component styles (cards, buttons, badges, tabs, inputs)
-  - Spacing and layout utilities
-  - **Implementation**: Copy the complete CSS from Section 3.2 into `app/globals.css`
-  - **Verification**: Task 1.1 in the Implementation Plan
 
 #### To Be Added 📦
 ```json
@@ -122,609 +104,7 @@ This template includes a complete **Dark Theme Design System** optimized for dev
 
 ---
 
-## 3. Design System Integration
-
-### 3.1 Default Dark Theme Design System
-
-**IMPORTANT**: This template includes a complete dark theme design system that MUST be used for all UI components. The design system is implemented in `app/globals.css` using Tailwind v4's `@theme` directive and provides:
-
-- Complete color palette with semantic tokens
-- Fluid typography system using `clamp()`
-- Pre-built component styles (cards, buttons, badges, inputs, tabs)
-- Consistent spacing and border radius scales
-- Professional dark theme optimized for code/developer tools
-
-All new components should use these design tokens and pre-built classes.
-
-#### Color Palette
-```css
-/* Background Colors */
---color-bg-primary: 12 18 23;           /* Main background - Dark blue-gray */
---color-bg-secondary: 15 17 19;         /* Card background variant */
---color-bg-card: 0 0 0;                 /* Card transparent bg with border */
---color-bg-card-hover: 49 58 63;        /* Card hover state */
-
-/* Text Colors */
---color-text-primary: 255 255 255;      /* Main text - White */
---color-text-secondary: 202 214 226;    /* Secondary text - Light gray-blue */
---color-text-muted: 165 186 207;        /* Muted text - Gray-300 */
---color-text-accent: 109 197 255;       /* Accent blue text */
-
-/* Primary Blue Scale */
---color-primary-50: 238 248 255;
---color-primary-100: 220 241 255;
---color-primary-200: 178 224 255;
---color-primary-300: 109 197 255;
---color-primary-400: 32 166 255;
---color-primary-500: 0 153 255;
---color-primary-600: 0 134 223;
---color-primary-700: 0 108 180;
---color-primary-800: 0 89 149;
---color-primary-900: 0 73 122;
---color-primary-950: 0 39 65;
-
-/* Gray Scale */
---color-gray-50: 255 255 255;
---color-gray-100: 238 242 246;
---color-gray-200: 202 214 226;
---color-gray-300: 165 186 207;
---color-gray-400: 129 158 187;
---color-gray-500: 93 130 168;
---color-gray-600: 71 102 133;
---color-gray-700: 52 74 96;
---color-gray-800: 32 46 60;
---color-gray-900: 12 18 23;
---color-gray-950: 3 4 5;
-
-/* Border Colors */
---color-border-primary: 109 197 255;
---color-border-secondary: 93 130 168;
-```
-
-#### Typography System
-```css
-/* Font Family */
---font-sans: Archivo, ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-
-/* Fluid Typography Scale */
---typo-head: clamp(3.81rem, 7.12vi + 0.97rem, 6.66rem);
---typo-head-longer: clamp(3.18rem, 4.56vi + 1.35rem, 5rem);
---typo-xxxl: clamp(3.05rem, 4.87vi + 1.11rem, 5rem);
---typo-xxl: clamp(2.44rem, 3.27vi + 1.13rem, 3.75rem);
---typo-xl: clamp(1.95rem, 2.15vi + 1.09rem, 2.81rem);
---typo-lg: clamp(1.56rem, 1.37vi + 1.01rem, 2.11rem);
---typo-md: clamp(1.25rem, 0.83vi + 0.92rem, 1.41rem);
---typo-base: clamp(1rem, 0.47vi + 0.81rem, 1.19rem);
---typo-sm: clamp(0.8rem, 0.23vi + 0.71rem, 0.89rem);
-```
-
-#### Component Styles
-```css
-/* Buttons */
-.btn-primary {
-  background-color: rgb(var(--color-text-primary));
-  color: rgb(var(--color-bg-primary));
-  border-radius: var(--radius-sm);
-  padding: 0.5rem 0.75rem;
-  font-size: 14px;
-  font-weight: 500;
-  border: none;
-  transition: var(--transition-base);
-  cursor: pointer;
-}
-
-.btn-primary:hover {
-  background-color: rgb(240 240 240);
-  transform: scale(1.02);
-}
-
-.btn-secondary {
-  background-color: rgb(var(--color-gray-800));
-  color: rgb(var(--color-text-secondary));
-  border-radius: var(--radius-sm);
-  padding: 0.5rem 0.75rem;
-  font-size: 14px;
-  font-weight: 500;
-  border: none;
-  transition: var(--transition-base);
-  cursor: pointer;
-}
-
-/* Cards */
-.card {
-  background-color: transparent;
-  border: 1px solid rgb(var(--color-border-primary) / 0.3);
-  border-radius: var(--radius-md);
-  padding: 1.5rem;
-  transition: var(--transition-base);
-  cursor: pointer;
-}
-
-.card:hover {
-  background-color: rgb(var(--color-bg-card-hover));
-  border-color: rgb(var(--color-border-primary) / 0.5);
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-card-hover);
-}
-
-.card-title {
-  font-size: 22.56px;
-  font-weight: 600;
-  line-height: 33.84px;
-  color: rgb(var(--color-text-primary));
-  margin-bottom: 0.5rem;
-}
-
-.card-description {
-  font-size: 16px;
-  line-height: 24px;
-  color: rgb(var(--color-text-secondary));
-}
-
-/* Badge/Tag */
-.badge {
-  display: inline-block;
-  padding: 0.25rem 0.75rem;
-  border-radius: var(--radius-sm);
-  font-size: 12px;
-  font-weight: 500;
-  background-color: rgb(var(--color-primary-300) / 0.2);
-  color: rgb(var(--color-primary-300));
-  border: 1px solid rgb(var(--color-primary-300) / 0.3);
-}
-
-/* Search Input */
-.search-input {
-  background-color: transparent;
-  color: rgb(var(--color-text-primary));
-  border: 1px solid rgb(var(--color-border-primary) / 0.3);
-  border-radius: var(--radius-sm);
-  padding: 0.875rem 0.75rem 0.875rem 3rem;
-  font-size: 20px;
-  width: 100%;
-  transition: var(--transition-base);
-}
-
-.search-input:focus {
-  outline: none;
-  border-color: rgb(var(--color-border-primary) / 0.6);
-  box-shadow: 0 0 0 3px rgb(var(--color-border-primary) / 0.1);
-}
-
-/* Tabs */
-.tab {
-  background-color: transparent;
-  color: rgb(var(--color-text-primary));
-  border: none;
-  border-radius: var(--radius-sm);
-  padding: 0.5rem 0.75rem;
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: var(--transition-base);
-}
-
-.tab[aria-selected="true"],
-.tab.active {
-  background-color: rgb(var(--color-primary-300) / 0.2);
-  color: rgb(var(--color-primary-300));
-}
-```
-
-#### Design Principles
-1. **Dark Theme First**: Deep blue-gray background for professional appearance
-2. **Subtle Borders**: Light blue borders with 30% opacity for elegance
-3. **Hover States**: Cards lift and change background on hover
-4. **Fluid Typography**: Uses clamp() for responsive text scaling
-5. **Transparent Backgrounds**: Many components use transparent bg with borders
-6. **Blue Accent**: Primary accent color is light blue
-7. **High Contrast**: White text on dark background for readability
-8. **Rounded Corners**: 6px for small components, 12px for cards
-9. **Minimalist**: Clean, simple design with plenty of breathing room
-10. **Consistent Spacing**: 8px, 12px, 24px spacing scale
-
-### 3.2 Implementation in Global Styles
-
-The design system MUST be implemented in `app/globals.css` as shown below. This makes all design tokens available throughout the application via CSS variables.
-
-**Required `app/globals.css` structure:**
-
-```css
-/**
- * Dark Theme Design System for Developer Tools
- * This is the default theme for this template
- */
-
-@import "tailwindcss";
-
-@theme {
-  /* ===== Color Palette ===== */
-  
-  /* Background Colors */
-  --color-bg-primary: 12 18 23;
-  --color-bg-secondary: 15 17 19;
-  --color-bg-card: 0 0 0;
-  --color-bg-card-hover: 49 58 63;
-  
-  /* Text Colors */
-  --color-text-primary: 255 255 255;
-  --color-text-secondary: 202 214 226;
-  --color-text-muted: 165 186 207;
-  --color-text-accent: 109 197 255;
-  
-  /* Primary Blue Scale */
-  --color-primary-50: 238 248 255;
-  --color-primary-100: 220 241 255;
-  --color-primary-200: 178 224 255;
-  --color-primary-300: 109 197 255;
-  --color-primary-400: 32 166 255;
-  --color-primary-500: 0 153 255;
-  --color-primary-600: 0 134 223;
-  --color-primary-700: 0 108 180;
-  --color-primary-800: 0 89 149;
-  --color-primary-900: 0 73 122;
-  --color-primary-950: 0 39 65;
-  
-  /* Gray Scale */
-  --color-gray-50: 255 255 255;
-  --color-gray-100: 238 242 246;
-  --color-gray-200: 202 214 226;
-  --color-gray-300: 165 186 207;
-  --color-gray-400: 129 158 187;
-  --color-gray-500: 93 130 168;
-  --color-gray-600: 71 102 133;
-  --color-gray-700: 52 74 96;
-  --color-gray-800: 32 46 60;
-  --color-gray-900: 12 18 23;
-  --color-gray-950: 3 4 5;
-  
-  /* Yellow Accent Scale */
-  --color-yellow-50: 255 255 255;
-  --color-yellow-200: 255 255 255;
-  --color-yellow-300: 253 250 225;
-  --color-yellow-400: 251 243 187;
-  --color-yellow-500: 249 237 148;
-  --color-yellow-600: 246 228 95;
-  --color-yellow-700: 243 219 42;
-  --color-yellow-800: 217 192 12;
-  --color-yellow-900: 163 145 9;
-  --color-yellow-950: 137 122 8;
-  
-  /* Border Colors */
-  --color-border-primary: 109 197 255;
-  --color-border-secondary: 93 130 168;
-  
-  /* ===== Typography ===== */
-  
-  --font-sans: Archivo, ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-  
-  /* Fluid Typography Scale */
-  --typo-head: clamp(3.81rem, 7.12vi + 0.97rem, 6.66rem);
-  --typo-head-longer: clamp(3.18rem, 4.56vi + 1.35rem, 5rem);
-  --typo-xxxl: clamp(3.05rem, 4.87vi + 1.11rem, 5rem);
-  --typo-xxl: clamp(2.44rem, 3.27vi + 1.13rem, 3.75rem);
-  --typo-xl: clamp(1.95rem, 2.15vi + 1.09rem, 2.81rem);
-  --typo-lg: clamp(1.56rem, 1.37vi + 1.01rem, 2.11rem);
-  --typo-md: clamp(1.25rem, 0.83vi + 0.92rem, 1.41rem);
-  --typo-base: clamp(1rem, 0.47vi + 0.81rem, 1.19rem);
-  --typo-sm: clamp(0.8rem, 0.23vi + 0.71rem, 0.89rem);
-  
-  /* ===== Spacing ===== */
-  
-  --spacing-xs: 0.5rem;
-  --spacing-sm: 0.75rem;
-  --spacing-md: 0.875rem;
-  --spacing-lg: 1.5rem;
-  --spacing-xl: 3rem;
-  
-  /* ===== Border Radius ===== */
-  
-  --radius-sm: 6px;
-  --radius-md: 12px;
-  --radius-lg: 16px;
-  --radius-full: 9999px;
-  
-  /* ===== Shadows ===== */
-  
-  --shadow-card: 0 4px 12px rgb(0 0 0 / 0.1);
-  --shadow-card-hover: 0 8px 24px rgb(0 0 0 / 0.15);
-  
-  /* ===== Other ===== */
-  
-  --header-height: 4rem;
-  --transition-base: all 0.2s ease;
-}
-
-/* ===== Base Styles ===== */
-
-* {
-  border-color: rgb(var(--color-border-primary) / 0.3);
-}
-
-body {
-  background-color: rgb(var(--color-bg-primary));
-  color: rgb(var(--color-text-secondary));
-  font-family: var(--font-sans);
-  font-size: 18.6px;
-  line-height: 25.6px;
-}
-
-/* ===== Pre-built Component Classes ===== */
-
-/* Buttons */
-.btn-primary {
-  background-color: rgb(var(--color-text-primary));
-  color: rgb(var(--color-bg-primary));
-  border-radius: var(--radius-sm);
-  padding: 0.5rem 0.75rem;
-  font-size: 14px;
-  font-weight: 500;
-  border: none;
-  transition: var(--transition-base);
-  cursor: pointer;
-}
-
-.btn-primary:hover {
-  background-color: rgb(240 240 240);
-  transform: scale(1.02);
-}
-
-.btn-secondary {
-  background-color: rgb(var(--color-gray-800));
-  color: rgb(var(--color-text-secondary));
-  border-radius: var(--radius-sm);
-  padding: 0.5rem 0.75rem;
-  font-size: 14px;
-  font-weight: 500;
-  border: none;
-  transition: var(--transition-base);
-  cursor: pointer;
-}
-
-.btn-secondary:hover {
-  background-color: rgb(var(--color-gray-700));
-}
-
-/* Cards */
-.card {
-  background-color: transparent;
-  border: 1px solid rgb(var(--color-border-primary) / 0.3);
-  border-radius: var(--radius-md);
-  padding: 1.5rem;
-  transition: var(--transition-base);
-  cursor: pointer;
-}
-
-.card:hover {
-  background-color: rgb(var(--color-bg-card-hover));
-  border-color: rgb(var(--color-border-primary) / 0.5);
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-card-hover);
-}
-
-.card-title {
-  font-size: 22.56px;
-  font-weight: 600;
-  line-height: 33.84px;
-  color: rgb(var(--color-text-primary));
-  margin-bottom: 0.5rem;
-}
-
-.card-description {
-  font-size: 16px;
-  line-height: 24px;
-  color: rgb(var(--color-text-secondary));
-}
-
-/* Badge/Tag */
-.badge {
-  display: inline-block;
-  padding: 0.25rem 0.75rem;
-  border-radius: var(--radius-sm);
-  font-size: 12px;
-  font-weight: 500;
-  background-color: rgb(var(--color-primary-300) / 0.2);
-  color: rgb(var(--color-primary-300));
-  border: 1px solid rgb(var(--color-primary-300) / 0.3);
-}
-
-/* Search Input */
-.search-input {
-  background-color: transparent;
-  color: rgb(var(--color-text-primary));
-  border: 1px solid rgb(var(--color-border-primary) / 0.3);
-  border-radius: var(--radius-sm);
-  padding: 0.875rem 0.75rem 0.875rem 3rem;
-  font-size: 20px;
-  width: 100%;
-  transition: var(--transition-base);
-}
-
-.search-input:focus {
-  outline: none;
-  border-color: rgb(var(--color-border-primary) / 0.6);
-  box-shadow: 0 0 0 3px rgb(var(--color-border-primary) / 0.1);
-}
-
-.search-input::placeholder {
-  color: rgb(var(--color-text-secondary) / 0.5);
-}
-
-/* Tabs */
-.tab {
-  background-color: transparent;
-  color: rgb(var(--color-text-primary));
-  border: none;
-  border-radius: var(--radius-sm);
-  padding: 0.5rem 0.75rem;
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: var(--transition-base);
-}
-
-.tab:hover {
-  background-color: rgb(var(--color-primary-300) / 0.1);
-}
-
-.tab[aria-selected="true"],
-.tab.active {
-  background-color: rgb(var(--color-primary-300) / 0.2);
-  color: rgb(var(--color-primary-300));
-}
-
-/* Checkbox */
-.checkbox {
-  width: 18px;
-  height: 18px;
-  border: 1px solid rgb(var(--color-border-primary) / 0.3);
-  border-radius: 4px;
-  background-color: transparent;
-  cursor: pointer;
-  transition: var(--transition-base);
-}
-
-.checkbox:checked {
-  background-color: rgb(var(--color-primary-300));
-  border-color: rgb(var(--color-primary-300));
-}
-
-/* Navigation */
-.nav {
-  background-color: rgb(var(--color-bg-primary));
-  border-bottom: 1px solid rgb(var(--color-border-primary) / 0.1);
-  padding: 1rem 1.5rem;
-  height: var(--header-height);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-/* Filter Sidebar */
-.filter-sidebar {
-  padding: 1.5rem;
-  border-radius: var(--radius-md);
-  background-color: transparent;
-}
-
-.filter-group {
-  margin-bottom: 1.5rem;
-}
-
-.filter-group h4 {
-  font-size: 14px;
-  font-weight: 600;
-  color: rgb(var(--color-text-primary));
-  margin-bottom: 0.75rem;
-}
-
-/* Container */
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 1.5rem;
-}
-
-/* Grid Layout */
-.grid-cards {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 1.5rem;
-}
-
-/* Typography Utilities */
-.text-hero {
-  font-size: 76.2px;
-  font-weight: 600;
-  line-height: 76.8px;
-  color: rgb(var(--color-text-primary));
-}
-
-.text-h2 {
-  font-size: 22.56px;
-  font-weight: 600;
-  line-height: 33.84px;
-  color: rgb(var(--color-text-primary));
-}
-
-.text-body {
-  font-size: 18.6px;
-  line-height: 25.6px;
-  color: rgb(var(--color-text-secondary));
-}
-
-.text-accent {
-  color: rgb(var(--color-text-accent));
-}
-
-/* Utility Classes */
-.rounded-sm { border-radius: var(--radius-sm); }
-.rounded-md { border-radius: var(--radius-md); }
-.rounded-lg { border-radius: var(--radius-lg); }
-
-.transition-base { transition: var(--transition-base); }
-
-.border-primary { border-color: rgb(var(--color-border-primary) / 0.3); }
-.border-primary-solid { border-color: rgb(var(--color-border-primary)); }
-
-.bg-card { 
-  background-color: transparent; 
-  border: 1px solid rgb(var(--color-border-primary) / 0.3);
-}
-
-.bg-card-hover:hover { 
-  background-color: rgb(var(--color-bg-card-hover)); 
-}
-
-/* Focus Visible Styles */
-*:focus-visible {
-  outline: 2px solid rgb(var(--color-primary-300));
-  outline-offset: 2px;
-}
-
-/* Selection Styles */
-::selection {
-  background-color: rgb(var(--color-primary-300) / 0.3);
-  color: rgb(var(--color-text-primary));
-}
-```
-
-**Usage Guidelines:**
-
-1. **Always use design tokens** instead of hard-coded colors:
-   ```tsx
-   // ❌ Bad
-   <div className="bg-[#0c1217] text-white">
-   
-   // ✅ Good
-   <div className="bg-[rgb(var(--color-bg-primary))] text-[rgb(var(--color-text-primary))]">
-   
-   // ✅ Even better - use pre-built classes when available
-   <div className="card">
-     <h3 className="card-title">Title</h3>
-     <p className="card-description">Description</p>
-   </div>
-   ```
-
-2. **Use pre-built component classes** for common patterns:
-   - `.btn-primary`, `.btn-secondary` for buttons
-   - `.card`, `.card-title`, `.card-description` for cards
-   - `.badge` for tags/labels
-   - `.search-input` for search fields
-   - `.tab` for tab navigation
-   - `.text-hero`, `.text-h2`, `.text-body` for typography
-
-3. **Maintain consistent spacing** using the spacing scale:
-   - Use `var(--spacing-xs)` through `var(--spacing-xl)`
-   - Or use Tailwind's spacing utilities which align with the scale
-
-4. **Use fluid typography** for responsive text:
-   - Use `var(--typo-*)` for fluid scaling
-   - Or use the utility classes `.text-hero`, `.text-h2`, etc.
-
----
-
-## 4. Database Schema Design
+## 3. Database Schema Design
 
 ### 3.1 Resources Table (Lightweight Metadata)
 
@@ -1130,23 +510,14 @@ ResourcePreviewModal (Client Component)
 
 ## 8. Implementation Plan
 
-**CRITICAL FIRST STEP**: Before implementing any features, ensure the Dark Theme Design System from Section 3.2 is properly implemented in `app/globals.css`. All components built in this plan depend on these design tokens and pre-built classes.
-
 ### Phase 1: Foundation - Build-time Indexing & Static Browsing
 
-#### Task 1.1: Verify Design System Implementation
-- [ ] Ensure `app/globals.css` contains all design system code from Section 3.2
-- [ ] Verify all CSS custom properties are accessible in browser DevTools
-- [ ] Test that body has correct background and text colors
-- [ ] Verify that `.card`, `.btn-primary`, `.badge` classes work correctly
-- [ ] Confirm font family (Archivo) is loading properly
-
-#### Task 1.2: Install Dependencies
+#### Task 1.1: Install Dependencies
 - [ ] Install new npm packages: `gray-matter`, `shiki`, `react-markdown`, `remark-gfm`, `fuse.js`, `file-saver`, `@tanstack/react-virtual`
 - [ ] Install dev dependencies: `@types/file-saver`, `tsx`
 - [ ] Update `package.json` scripts to include `resources:index` and modify `build` script
 
-#### Task 1.3: Create Resource Indexing Script
+#### Task 1.2: Create Resource Indexing Script
 - [ ] Create `scripts/index-resources.ts`
 - [ ] Implement recursive directory scanner for `cursor-resources/`
 - [ ] Implement file metadata extraction:
@@ -1159,14 +530,14 @@ ResourcePreviewModal (Client Component)
 - [ ] Output to `public/data/resources-index.json`
 - [ ] Test script with all 509 files
 
-#### Task 1.4: Create Resource Types
+#### Task 1.3: Create Resource Types
 - [ ] Create `types/resources.ts`
 - [ ] Define `ResourceType` enum
 - [ ] Define `ResourceMetadata` interface
 - [ ] Define `ResourceIndex` interface
 - [ ] Export all types
 
-#### Task 1.5: Create Resource Utilities
+#### Task 1.4: Create Resource Utilities
 - [ ] Create `lib/resources.ts`
 - [ ] Implement `getResourceIndex()` - load JSON index
 - [ ] Implement `getResourceBySlug()` - find by slug
@@ -1175,43 +546,43 @@ ResourcePreviewModal (Client Component)
 - [ ] Implement `getResourceContent()` - read file from filesystem
 - [ ] Add path validation to prevent directory traversal
 
-#### Task 1.6: Implement Search System
+#### Task 1.5: Implement Search System
 - [ ] Create `lib/search.ts`
 - [ ] Configure Fuse.js with weighted keys
 - [ ] Implement `createSearchIndex()` - initialize Fuse instance
 - [ ] Implement `searchResources()` - search with filters
 - [ ] Add debounce utility for search input
 
-#### Task 1.7: Create File Utilities
+#### Task 1.6: Create File Utilities
 - [ ] Create `lib/file-utils.ts`
 - [ ] Implement file type detection
 - [ ] Implement icon mapping (FileCode, FileText, FileJson, Terminal)
 - [ ] Implement file size formatting (bytes to KB/MB)
 - [ ] Implement extension extraction
 
-#### Task 1.8: Build ResourceCard Component
+#### Task 1.7: Build ResourceCard Component
 - [ ] Create `components/features/resources/resource-card.tsx`
 - [ ] Add icon based on resource type
 - [ ] Display title, description (truncated)
-- [ ] Add category badge using `.badge` class
+- [ ] Add category badge
 - [ ] Show file size and extension
 - [ ] Add placeholder for download count
 - [ ] Add placeholder for favorite button
 - [ ] Add preview button
 - [ ] Add download button
-- [ ] Style with `.card` class from design system
-- [ ] Add hover effects (built into `.card` class)
+- [ ] Style with Tailwind CSS classes
+- [ ] Add hover effects
 
-#### Task 1.9: Build ResourceFilters Component
+#### Task 1.8: Build ResourceFilters Component
 - [ ] Create `components/features/resources/resource-filters.tsx`
-- [ ] Implement search input with icon using `.search-input` class
-- [ ] Implement type tabs (All, Commands, Rules, MCPs, Hooks) using `.tab` classes
+- [ ] Implement search input with icon
+- [ ] Implement type tabs (All, Commands, Rules, MCPs, Hooks)
 - [ ] Implement category select (dynamic options based on type)
 - [ ] Implement sort dropdown (Name, Downloads, Recent)
-- [ ] Add "Clear filters" button using `.btn-secondary` class
+- [ ] Add "Clear filters" button
 - [ ] Emit filter change events to parent
 
-#### Task 1.10: Build ResourceBrowser Component
+#### Task 1.9: Build ResourceBrowser Component
 - [ ] Create `components/features/resources/resource-browser.tsx`
 - [ ] Add `'use client'` directive
 - [ ] Accept `initialResources` and `categories` props
@@ -1225,22 +596,22 @@ ResourcePreviewModal (Client Component)
 - [ ] Add empty state when no results
 - [ ] Add loading skeleton during search
 
-#### Task 1.11: Create Loading Skeletons
+#### Task 1.10: Create Loading Skeletons
 - [ ] Create `components/features/resources/resource-card-skeleton.tsx`
 - [ ] Match ResourceCard layout
 - [ ] Use shadcn/ui Skeleton component
 - [ ] Create grid of skeletons for loading state
 
-#### Task 1.12: Update Landing Page
+#### Task 1.11: Update Landing Page
 - [ ] Modify `app/page.tsx`
 - [ ] Make it async Server Component
 - [ ] Load resource index with `getResourceIndex()`
 - [ ] Pass resources to ResourceBrowser
-- [ ] Add hero section with search bar using `.text-hero` and `.search-input` classes
-- [ ] Add statistics (total resources, categories) using `.text-h2` and `.text-body` classes
-- [ ] Replace starter template content with dark theme design system
+- [ ] Add hero section with search bar
+- [ ] Add statistics (total resources, categories)
+- [ ] Replace starter template content
 
-#### Task 1.13: Test Phase 1
+#### Task 1.12: Test Phase 1
 - [ ] Run build script to generate resource index
 - [ ] Verify `public/data/resources-index.json` created
 - [ ] Verify all 509 resources indexed correctly
@@ -1546,15 +917,15 @@ ResourcePreviewModal (Client Component)
 - [ ] Update count after download (optimistic)
 
 #### Task 4.4: Enhance Landing Page Hero
-- [ ] Add hero section with dark theme background using design system colors
-- [ ] Add tagline: "Discover and Download Cursor Resources" using `.text-hero` class
-- [ ] Add prominent search bar (pre-filled, auto-focus) using `.search-input` class
-- [ ] Add quick links to resource types (4 large buttons) using `.btn-primary` class
-- [ ] Add statistics section using `.text-h2` and `.text-body` classes:
+- [ ] Add hero section with dark theme background
+- [ ] Add tagline: "Discover and Download Cursor Resources"
+- [ ] Add prominent search bar (pre-filled, auto-focus)
+- [ ] Add quick links to resource types (4 large buttons)
+- [ ] Add statistics section:
   - [ ] Total resources count
   - [ ] Total categories
   - [ ] Total downloads (sum of all resources)
-- [ ] Style with animations (fade-in, slide-up) using design system transitions
+- [ ] Style with animations (fade-in, slide-up)
 
 #### Task 4.5: Create Error Boundary
 - [ ] Create `components/features/resources/resource-error-boundary.tsx`
@@ -1668,6 +1039,8 @@ ResourcePreviewModal (Client Component)
 ## 9. Deployment Checklist
 
 ### Pre-Deployment
+- [ ] Verify `postcss.config.mjs` uses object syntax: `plugins: { "@tailwindcss/postcss": {} }`
+- [ ] Verify `ThemeProvider` wraps app in `app/layout.tsx`
 - [ ] Run `npm run resources:index` to generate resource index
 - [ ] Run `npm run build` to verify production build
 - [ ] Run `npm run test` to ensure all tests pass
@@ -1890,7 +1263,7 @@ SELECT EXISTS(
 **Update this section as tasks are completed. Check off items in the implementation plan above.**
 
 ### Phase 1 Status: ⬜ Not Started
-- 0 / 13 tasks completed (includes design system verification)
+- 0 / 12 tasks completed
 
 ### Phase 2 Status: ⬜ Not Started
 - 0 / 11 tasks completed
@@ -1901,13 +1274,13 @@ SELECT EXISTS(
 ### Phase 4 Status: ⬜ Not Started
 - 0 / 14 tasks completed
 
-### Overall Progress: 0% (0 / 49 tasks)
+### Overall Progress: 0% (0 / 48 tasks)
 
 ---
 
-**Last Updated**: October 19, 2025  
+**Last Updated**: October 21, 2025  
 **Status**: Ready for Implementation  
-**Next Action**: Begin Phase 1, Task 1.1 - Verify Design System Implementation in `app/globals.css`
+**Next Action**: Begin Phase 1, Task 1.1 - Install Dependencies
 
 ---
 
